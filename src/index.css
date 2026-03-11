@@ -1,0 +1,108 @@
+:root {
+  /* Warm sunset palette - distinctive and cohesive */
+  --color-primary: #ff6b35;
+  --color-secondary: #f7931e;
+  --color-accent: #00d4ff;
+  --color-accent-dark: #0099cc;
+  --color-bg-dark: #1a1a2e;
+  --color-bg-mid: #16213e;
+  --color-bg-light: #0f3460;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e0e0e0;
+  --color-card: rgba(255, 255, 255, 0.08);
+  --color-card-hover: rgba(255, 255, 255, 0.12);
+  
+  /* Typography */
+  --font-display: 'Bungee Shade', cursive;
+  --font-body: 'DM Sans', sans-serif;
+  
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  
+  /* Shadows */
+  --shadow-glow: 0 0 20px rgba(255, 107, 53, 0.3);
+  --shadow-glow-accent: 0 0 30px rgba(0, 212, 255, 0.4);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg-dark);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Animated background layers */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255, 107, 53, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(247, 147, 30, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-mid) 50%, var(--color-bg-light) 100%);
+  z-index: -2;
+  animation: backgroundShift 20s ease-in-out infinite;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.02) 2px,
+      rgba(255, 255, 255, 0.02) 4px
+    );
+  z-index: -1;
+  animation: patternMove 30s linear infinite;
+}
+
+@keyframes backgroundShift {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1) rotate(2deg);
+    opacity: 0.95;
+  }
+}
+
+@keyframes patternMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(20px, 20px);
+  }
+}
+
+#root {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
