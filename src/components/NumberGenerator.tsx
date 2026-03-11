@@ -10,7 +10,11 @@ interface StoredState {
   currentNumber: number | null
 }
 
-function NumberGenerator() {
+interface NumberGeneratorProps {
+  embedded?: boolean
+}
+
+function NumberGenerator({ embedded = false }: NumberGeneratorProps) {
   // Load initial state from localStorage
   const loadStateFromStorage = (): { calledNumbers: Set<number>, currentNumber: number | null } => {
     try {
@@ -110,15 +114,16 @@ function NumberGenerator() {
   const isNumberCalled = (num: number) => calledNumbers.has(num)
 
   return (
-    <div className="number-generator-page">
-      <nav className="generator-nav">
-        <Link to="/" className="back-button">
-          ← Back to Home
-        </Link>
-      </nav>
+    <div className="number-generator-section">
+      {!embedded && (
+        <nav className="generator-nav">
+          <Link to="/" className="back-button">
+            ← Back to Home
+          </Link>
+        </nav>
+      )}
       <div className="generator-container">
         <div className="generator-controls">
-          <h1 className="generator-title">Tambola Number Generator</h1>
           
           <div className="current-number-display">
             {isGenerating ? (

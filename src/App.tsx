@@ -1,37 +1,53 @@
-import { Routes, Route, Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
-import NumberGenerator from './components/NumberGenerator'
 import './App.css'
+import './components/NumberGenerator.css'
+import NumberGenerator from './components/NumberGenerator'
 
 function HomePage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  const closeMenu = () => {
+    setIsMenuOpen(false)
+  }
 
   return (
     <div className="app">
       {/* Navigation */}
       <nav className="nav">
-        <a href="#tool" className="nav-link">Play Now</a>
-        <a href="#features" className="nav-link">Features</a>
-        <a href="#use-cases" className="nav-link">Use Cases</a>
-        <a href="#faq" className="nav-link">FAQ</a>
-        <Link to="/generator" className="nav-link">Number Generator</Link>
+        <div className="nav-desktop">
+          <a href="#tool" className="nav-link">Play Now</a>
+          <a href="#features" className="nav-link">Features</a>
+          <a href="#use-cases" className="nav-link">Use Cases</a>
+          <a href="#faq" className="nav-link">FAQ</a>
+        </div>
+        <button className="hamburger" onClick={toggleMenu} aria-label="Toggle menu">
+          <span className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></span>
+          <span className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></span>
+          <span className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></span>
+        </button>
+        <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+          <a href="#tool" className="mobile-nav-link" onClick={closeMenu}>Play Now</a>
+          <a href="#features" className="mobile-nav-link" onClick={closeMenu}>Features</a>
+          <a href="#use-cases" className="mobile-nav-link" onClick={closeMenu}>Use Cases</a>
+          <a href="#faq" className="mobile-nav-link" onClick={closeMenu}>FAQ</a>
+        </div>
       </nav>
 
       {/* H1 Heading - Only One */}
       <header className="header" id="top">
-        <h1 className="title">Play Tambola Online - The Ultimate Classic Number Game Experience</h1>
-        <p className="subtitle">Generate Tickets, Join Rooms, and Play with Friends Instantly</p>
+        <h1 className="title">Tambola Number Generator 1-90</h1>
       </header>
 
       {/* Tool Section - Top */}
       <section className="tool-section" id="tool">
         <div className="tool-container">
-          <div className="tool-card">
-            <h2 className="tool-title">Tambola Number Generator</h2>
-            <p className="tool-description">Generate numbers one at a time with traditional rhyming calls. Perfect for hosting tambola games with friends and family.</p>
-            <Link to="/generator" className="button" style={{ textDecoration: 'none', display: 'inline-block' }}>
-              Start Number Generator
-            </Link>
-          </div>
+          <NumberGenerator embedded={true} />
         </div>
       </section>
 
@@ -333,47 +349,39 @@ function HomePage() {
       {/* FAQ Section */}
       <section className="faq-section" id="faq">
         <div className="section-wrapper">
-          <h2 className="section-title">Frequently Asked Questions</h2>
+          <h2 className="section-title">FAQ: Your Tambola Questions Answered</h2>
           <div className="faq-container">
             <div className="faq-item">
-              <h3 className="faq-question">How do I generate a tambola ticket?</h3>
-              <p className="faq-answer">Simply click the "Generate Ticket" button in the tool section above. Our system will instantly create a valid tambola ticket with proper number distribution following traditional tambola rules.</p>
+              <h3 className="faq-question">What exactly is an online tambola number generator?</h3>
+              <p className="faq-answer">It's a simple web tool that calls out tambola numbers (1 to 90) for you. Instead of shaking a bowl of chits or calling manually, you just click and a random number pops up on screen. Works great on phone or laptop—no boards or papers needed.</p>
             </div>
             <div className="faq-item">
-              <h3 className="faq-question">Can I play tambola with friends online?</h3>
-              <p className="faq-answer">Yes! You can create a game room and share the room code with friends, or join an existing room using a game code. All players in the same room will hear the same numbers called.</p>
+              <h3 className="faq-question">How does it work?</h3>
+              <p className="faq-answer">You start the game, hit "Next," and it picks a number from 1–90 that hasn't come up before. It keeps track of everything automatically so there's no confusion about what was already called. Super straightforward.</p>
             </div>
             <div className="faq-item">
-              <h3 className="faq-question">What are the winning patterns in tambola?</h3>
-              <p className="faq-answer">Common winning patterns include Early Five (first 5 numbers), Top Row (all numbers in first row), Middle Row (all numbers in second row), Bottom Row (all numbers in third row), and Full House (all numbers on ticket).</p>
+              <h3 className="faq-question">Is it really fair?</h3>
+              <p className="faq-answer">Yes, 100%. The computer uses random selection, so every number has the same shot. No repeats, no favoritism—everyone can see the calls live and trust the process.</p>
             </div>
             <div className="faq-item">
-              <h3 className="faq-question">Is tambola the same as bingo?</h3>
-              <p className="faq-answer">Tambola is similar to bingo but has distinct rules. Tambola tickets have a specific 3x9 grid format with 5 numbers per row, and numbers are organized in columns from 1-10, 11-20, etc., up to 81-90.</p>
+              <h3 className="faq-question">Can teachers use it in class?</h3>
+              <p className="faq-answer">Definitely! Many teachers do. It's perfect for teaching numbers, probability, or even quick math drills. Kids stay engaged because it feels like a game, not a lesson.</p>
             </div>
             <div className="faq-item">
-              <h3 className="faq-question">Do I need to register to play?</h3>
-              <p className="faq-answer">No registration is required! You can start generating tickets and playing immediately. For multiplayer rooms, you'll just need a game code to join.</p>
+              <h3 className="faq-question">What's a housie ticket generator?</h3>
+              <p className="faq-answer">That's the tool that makes your tambola tickets. It creates unique tickets automatically—right layout, right number spread. Pair it with the number generator, and you have a full digital tambola setup ready to go.</p>
             </div>
             <div className="faq-item">
-              <h3 className="faq-question">How many numbers are on a tambola ticket?</h3>
-              <p className="faq-answer">A standard tambola ticket has exactly 15 numbers arranged in three rows with five numbers each. The numbers are distributed across nine columns following specific rules.</p>
+              <h3 className="faq-question">Is it free?</h3>
+              <p className="faq-answer">Most of them are completely free. Just open in your browser—no downloads, no signups. Some have fancy paid features like custom sounds, but the basic generator works fine.</p>
             </div>
             <div className="faq-item">
-              <h3 className="faq-question">Can I play tambola on my mobile phone?</h3>
-              <p className="faq-answer">Absolutely! Our platform is fully responsive and works seamlessly on desktop computers, tablets, and mobile phones. The interface adapts to your screen size automatically.</p>
+              <h3 className="faq-question">Can I play with friends online?</h3>
+              <p className="faq-answer">Absolutely. Share your screen on Zoom, Meet, or Teams while you run the <strong>online tambola number generator</strong>. Friends mark their tickets (digital or printed) as numbers appear. Works like magic.</p>
             </div>
             <div className="faq-item">
-              <h3 className="faq-question">Is the ticket generation random and fair?</h3>
-              <p className="faq-answer">Yes, our ticket generation algorithm uses proper randomization while ensuring each ticket follows traditional tambola rules. Every ticket is unique and fairly distributed.</p>
-            </div>
-            <div className="faq-item">
-              <h3 className="faq-question">What age group is tambola suitable for?</h3>
-              <p className="faq-answer">Tambola is suitable for all ages! Children can learn numbers while playing, and adults enjoy the social and competitive aspects. It's a perfect intergenerational game.</p>
-            </div>
-            <div className="faq-item">
-              <h3 className="faq-question">How long does a typical tambola game last?</h3>
-              <p className="faq-answer">Game duration varies based on the number of players and how quickly numbers are called. Typically, a game can last anywhere from 15 minutes to an hour, depending on the pace and winning patterns chosen.</p>
+              <h3 className="faq-question">Why switch from manual tambola?</h3>
+              <p className="faq-answer">Less hassle, no arguments, works anywhere. You save time on setup and cleanup, and it's perfect for people in different cities. Great for family events, office fun, or school activities.</p>
             </div>
           </div>
         </div>
@@ -399,7 +407,6 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/generator" element={<NumberGenerator />} />
       </Routes>
       <ScrollToTop />
     </>
