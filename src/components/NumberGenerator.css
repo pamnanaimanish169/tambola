@@ -44,12 +44,51 @@
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: var(--spacing-xl);
+  align-items: start;
 }
 
 .generator-controls {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 3em;
+}
+
+.voice-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  background: var(--color-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: var(--spacing-sm);
+}
+
+.voice-selector label {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.voice-selector select {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-primary);
+  padding: var(--spacing-sm);
+  font-size: 0.95rem;
+}
+
+.voice-selector select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+}
+
+.voice-selector select option {
+  color: #111111;
+  background: #ffffff;
 }
 
 .generator-title {
@@ -193,6 +232,29 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.audio-play-button {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: 999px;
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  background: rgba(0, 212, 255, 0.15);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.audio-play-button:hover {
+  background: rgba(0, 212, 255, 0.25);
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.audio-play-button:active {
+  transform: translateY(0);
+}
+
 .number-placeholder {
   text-align: center;
 }
@@ -212,6 +274,7 @@
 
 .control-buttons {
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-md);
   flex-wrap: wrap;
 }
@@ -275,14 +338,17 @@
   display: flex;
   gap: var(--spacing-lg);
   justify-content: center;
-  padding: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   background: var(--color-card);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  flex: 1;
+  min-height: 100%;
 }
 
 .stat-item {
   display: flex;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-xs);
@@ -302,21 +368,58 @@
   font-family: var(--font-display);
 }
 
+.tool-cross-link {
+  background: var(--color-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  text-align: center;
+  flex: 1;
+  min-height: 100%;
+}
+
+.tool-cross-link p {
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-secondary);
+}
+
+.tool-cross-link .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+}
+
 .number-board {
   background: var(--color-card);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: var(--spacing-lg);
-  padding-bottom: var(--spacing-xs);
+  padding: 30px;
+  /* padding: var(--spacing-lg); */
+  /* padding-bottom: var(--spacing-xs); */
   box-shadow: var(--shadow-card);
+  align-self: start;
+}
+
+.generator-bottom-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
 }
 
 .board-title {
   color: var(--color-primary);
   font-size: 1.75rem;
   text-align: center;
-  margin-bottom: var(--spacing-lg);
+  margin-top: 0;
   font-weight: 700;
 }
 
@@ -325,8 +428,8 @@
   grid-template-columns: repeat(10, 1fr);
   grid-auto-rows: min-content;
   gap: var(--spacing-xs);
-  overflow-y: auto;
-  padding: var(--spacing-sm) var(--spacing-sm) 0 var(--spacing-sm);
+  overflow: hidden;
+  padding: var(--spacing-sm);
   align-content: start;
 }
 
@@ -411,6 +514,11 @@
 }
 
 @media (max-width: 768px) {
+  .generator-bottom-row {
+    flex-direction: column;
+    margin-top: var(--spacing-md);
+  }
+
   .board-grid {
     grid-template-columns: repeat(9, 1fr);
     max-height: none;

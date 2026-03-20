@@ -1,9 +1,406 @@
 import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import './App.css'
 import './components/NumberGenerator.css'
 import NumberGenerator from './components/NumberGenerator'
+
+type TicketCell = number | null
+type TicketGrid = TicketCell[][]
+
+const COLUMN_RANGES: Array<[number, number]> = [
+  [1, 9],
+  [10, 19],
+  [20, 29],
+  [30, 39],
+  [40, 49],
+  [50, 59],
+  [60, 69],
+  [70, 79],
+  [80, 90]
+]
+
+const ROW_COUNT = 3
+const COLUMN_COUNT = 9
+const NUMBERS_PER_TICKET = 15
+
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function shuffle<T>(items: T[]): T[] {
+  const result = [...items]
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = randomInt(0, i)
+    ;[result[i], result[j]] = [result[j], result[i]]
+  }
+  return result
+}
+
+function getCombinations(items: number[], size: number): number[][] {
+  const combinations: number[][] = []
+  const current: number[] = []
+
+  const backtrack = (start: number) => {
+    if (current.length === size) {
+      combinations.push([...current])
+      return
+    }
+    for (let i = start; i < items.length; i++) {
+      current.push(items[i])
+      backtrack(i + 1)
+      current.pop()
+    }
+  }
+
+  backtrack(0)
+  return combinations
+}
+
+function buildColumnCounts(): number[] {
+  const counts = Array.from({ length: COLUMN_COUNT }, () => 1)
+  let remaining = NUMBERS_PER_TICKET - COLUMN_COUNT
+
+  while (remaining > 0) {
+    const eligible = counts
+      .map((count, index) => ({ count, index }))
+      .filter(item => item.count < ROW_COUNT)
+      .map(item => item.index)
+
+    if (!eligible.length) {
+      throw new Error('Unable to distribute ticket numbers across columns.')
+    }
+
+    const randomColumn = eligible[randomInt(0, eligible.length - 1)]
+    counts[randomColumn] += 1
+    remaining -= 1
+  }
+
+  return counts
+}
+
+function assignRowsForColumns(columnCounts: number[]): number[][] {
+  const rowRemaining = [5, 5, 5]
+  const columnRows: number[][] = Array.from({ length: COLUMN_COUNT }, () => [])
+
+  const solve = (columnIndex: number): boolean => {
+    if (columnIndex === COLUMN_COUNT) {
+      return rowRemaining.every(count => count === 0)
+    }
+
+    const rowsAvailable = [0, 1, 2].filter(row => rowRemaining[row] > 0)
+    const needed = columnCounts[columnIndex]
+    const combinations = shuffle(getCombinations(rowsAvailable, needed))
+    const remainingColumns = COLUMN_COUNT - (columnIndex + 1)
+
+    for (const rows of combinations) {
+      rows.forEach(row => {
+        rowRemaining[row] -= 1
+      })
+
+      const canStillSolve = rowRemaining.every(
+        value => value >= 0 && value <= remainingColumns
+      )
+
+      if (canStillSolve) {
+        columnRows[columnIndex] = rows
+        if (solve(columnIndex + 1)) {
+          return true
+        }
+      }
+
+      rows.forEach(row => {
+        rowRemaining[row] += 1
+      })
+    }
+
+    return false
+  }
+
+  if (!solve(0)) {
+    throw new Error('Failed to build a valid row layout for this ticket.')
+  }
+
+  return columnRows
+}
+
+function pickColumnNumbers(columnIndex: number, count: number): number[] {
+  const [min, max] = COLUMN_RANGES[columnIndex]
+  const available: number[] = []
+
+  for (let value = min; value <= max; value++) {
+    available.push(value)
+  }
+
+  const selected = shuffle(available).slice(0, count).sort((a, b) => a - b)
+  if (selected.length !== count) {
+    throw new Error('Not enough numbers available for ticket column.')
+  }
+  return selected
+}
+
+function generateSingleTicket(): TicketGrid {
+  const grid: TicketGrid = Array.from({ length: ROW_COUNT }, () =>
+    Array.from({ length: COLUMN_COUNT }, () => null)
+  )
+
+  const columnCounts = buildColumnCounts()
+  const rowsByColumn = assignRowsForColumns(columnCounts)
+
+  for (let column = 0; column < COLUMN_COUNT; column++) {
+    const rows = [...rowsByColumn[column]].sort((a, b) => a - b)
+    const numbers = pickColumnNumbers(column, rows.length)
+
+    rows.forEach((row, index) => {
+      grid[row][column] = numbers[index]
+    })
+  }
+
+  return grid
+}
+
+function TambolaTicketsPage() {
+  const [ticketCountInput, setTicketCountInput] = useState('6')
+  const [tickets, setTickets] = useState<TicketGrid[]>([])
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const generateTickets = () => {
+    const parsedCount = Number(ticketCountInput)
+    if (!Number.isInteger(parsedCount) || parsedCount < 1 || parsedCount > 100) {
+      setErrorMessage('Enter a valid number of tickets between 1 and 100.')
+      return
+    }
+
+    setErrorMessage('')
+    setIsGenerating(true)
+
+    window.setTimeout(() => {
+      try {
+        const nextTickets = Array.from({ length: parsedCount }, () => generateSingleTicket())
+        setTickets(nextTickets)
+      } catch {
+        setErrorMessage('Could not generate tickets right now. Please try again.')
+      } finally {
+        setIsGenerating(false)
+      }
+    }, 200)
+  }
+
+  const printTickets = () => {
+    if (!tickets.length) {
+      setErrorMessage('Generate at least one ticket before printing/downloading.')
+      return
+    }
+    window.print()
+  }
+
+  return (
+    <div className="app">
+      <header className="header" id="top">
+        <h1 className="title">Tambola Tickets Generator</h1>
+      </header>
+
+      <section className="tool-section tickets-tool-page" id="ticket-tool">
+        <div className="tickets-tool-shell">
+          <div className="tickets-controls">
+            <h2>Free Tambola Tickets Tool</h2>
+            <p>
+              Generate valid 3-row x 9-column housie tickets (15 numbers per ticket), print instantly,
+              or save as PDF from your browser print dialog.
+            </p>
+
+            <div className="input-group">
+              <label htmlFor="ticket-count-input" className="tickets-label">
+                Number of Tickets
+              </label>
+              <input
+                id="ticket-count-input"
+                type="number"
+                min={1}
+                max={100}
+                value={ticketCountInput}
+                onChange={event => setTicketCountInput(event.target.value)}
+                className="game-input"
+                aria-label="Number of tickets to generate"
+              />
+            </div>
+
+            <div className="tickets-actions">
+              <button type="button" className="button" onClick={generateTickets} disabled={isGenerating}>
+                {isGenerating ? 'Generating...' : 'Generate Tickets'}
+              </button>
+              <button type="button" className="button button-accent" onClick={printTickets} disabled={isGenerating}>
+                Print / Download PDF
+              </button>
+              <a href="/#tool" className="button button-secondary-link">
+                Go to Number Generator
+              </a>
+            </div>
+
+            {errorMessage ? <p className="tickets-error">{errorMessage}</p> : null}
+          </div>
+
+          <div className="tickets-preview">
+            {!tickets.length && !isGenerating ? (
+              <p className="tickets-placeholder">Generate tickets to preview, print, or download.</p>
+            ) : null}
+
+            <div className="tickets-grid">
+              {tickets.map((ticket, ticketIndex) => (
+                <article className="ticket-card" key={`ticket-${ticketIndex + 1}`}>
+                  <h3>Ticket {ticketIndex + 1}</h3>
+                  <table className="ticket-table">
+                    <tbody>
+                      {ticket.map((row, rowIndex) => (
+                        <tr key={`row-${ticketIndex + 1}-${rowIndex + 1}`}>
+                          {row.map((cell, colIndex) => (
+                            <td key={`cell-${ticketIndex + 1}-${rowIndex + 1}-${colIndex + 1}`}>
+                              {cell ?? ''}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="content-section tickets-seo-content" id="content">
+        <div className="content-wrapper">
+          <h2>Tambola Tickets: Origins, Design, and Play in the Housie Game</h2>
+          <p>
+            Okay, imagine the scene-chaotic living room, aunties with tambola tickets fanned out like poker pros, kids
+            underfoot, and bam, &quot;Lines!&quot; echoes as some number drops. Tambola tickets? They&apos;re the soul of the
+            housie game, that bingo-on-steroids we Indians can&apos;t quit. Diwali at my place in Jaipur? These cards turn
+            grumpy relatives into hype beasts. Hunting free tambola tickets or printable tambola tickets for your next
+            do? Stick around. I&apos;ll spill the beans on where they came from, what makes &apos;em tick, and yeah, how to
+            cheat the odds without getting caught. Luck&apos;s fun, but who wants to lose every round?
+          </p>
+          <p>
+            Why does it hook you? Pure adrenaline. 27 spots, numbers 1-90. Snag printable ones, yell calls, drama
+            explodes. Old pics say it kicked off in colonial days. Details incoming.
+          </p>
+
+          <h3>Historical Evolution of Tambola Tickets</h3>
+          <p>
+            1920s. Brits dock in Mumbai, bored sailors peddle bingo. Locals grab it, tweak into tambola tickets by
+            &apos;30s-bolder, cheaper than stiff UK cards. Flipped through Rajasthan fair posters once (uncle&apos;s attic
+            goldmine); newsprint beasts yelling &quot;everyone wins!&quot;
+          </p>
+          <p>
+            After &apos;47, boom-community halls packed for charity. Genius fusion or lazy fun? Take your pick. &apos;80s hit,
+            machines churn printable tambola tickets, bye-bye wonky hands. Free tambola tickets online now?
+            Game-changer. Anyone plays. Why still alive? Screams &quot;family glue,&quot; that&apos;s why. My neighbor&apos;s 80th?
+            Packed house.
+          </p>
+
+          <h3>Anatomy of Standard Tambola Tickets</h3>
+          <p>
+            Grab one. 3x9 grid. 27 boxes. Left column 1-9. Next 10-19. Right? 81-90. Five nums per column, four
+            empty. Sparse = suspense.
+          </p>
+          <p>
+            Crisp print: black-white, fat fonts. Grandma-proof. I slap colors on for brats&apos; birthdays-stays fun. Some
+            study says it hooks better. Duh.
+          </p>
+
+          <h3>Key Numbers and Patterns</h3>
+          <p>
+            &quot;90&quot;? House party over. &quot;1&quot; teases. Lines first, then crazy: letters, edges. Pros scan tambola tickets
+            upfront for clusters. Works? Sorta. Stats nod yes. But gamble smart.
+          </p>
+
+          <h3>Variations and Modern Adaptations, Including Free Tambola Tickets</h3>
+          <p>
+            Plain Jane bore you? Wedding tambola tickets-doves, rings. Office? Boss roasts. Free tambola tickets?
+            Sites dump &apos;em free; I hoard like Diwali sweets.
+          </p>
+          <p>
+            COVID? Apps for virtual housie game. Zoom cheers, okay-ish. Paper wins. Speed it, reverse-chaos gold.
+            <a href="https://example.com/party-games-event-planning-guide" target="_blank" rel="noreferrer">
+              Event planning tips
+            </a>{' '}
+            save your ass.
+          </p>
+
+          <h3>Creating Printable Tambola Tickets at Home</h3>
+          <p>
+            Skip stores. Excel hack: =RANDBETWEEN(1,9) column 1, etc. Random magic. Print. Snip. Party.
+          </p>
+
+          <h3>Tools for Custom Housie Game Sheets</h3>
+          <p>
+            Canva rules printable tambola tickets-drag crap, theme, PDF. Code monkeys? Python + QR scanner. 300 DPI.
+            Laminate for{' '}
+            <a href="https://example.com/family-entertainment-games" target="_blank" rel="noreferrer">
+              family game nights
+            </a>{' '}
+            reruns. Scrap test first, or ink hell.
+          </p>
+          <p>Oh, forgot: free templates everywhere. Tinker away.</p>
+
+          <h3>Rules and Strategies for Winning with Tambola Tickets</h3>
+          <p>
+            Caller digs 1-90 bag. &quot;Kelly&apos;s Eye-one!&quot; &quot;Legs eleven!&quot; Dab quick. Full card? &quot;House!&quot; Peek? Booted.
+          </p>
+          <p>
+            Edge it: mid-heavy tambola tickets (30-60). Callers crawl low-high. Log misses-late surges. Sims say
+            nudge. Luck queen tho.{' '}
+            <a href="https://example.com/diy-party-ideas-supplies" target="_blank" rel="noreferrer">
+              DIY party supplies
+            </a>{' '}
+            kit it out.
+          </p>
+          <p>Uncle once palmed a number. Scandal. Don&apos;t.</p>
+
+          <h3>Common Patterns and Caller Phrases</h3>
+          <p>
+            Line-any. Then corners, full columns. &quot;Two fat ladies-88!&quot; Childhood earworms. Housie game magic.
+          </p>
+
+          <h3>Cultural Significance and Global Spread</h3>
+          <p>
+            Jaipur Holi mela? Tambola tickets everywhere-kids vs nanis. Win? Dance-off. Lose? Blame bag. NRIs in
+            London? &quot;Housie&quot; with vindaloo pots.
+          </p>
+          <p>
+            Skill or bet? Courts shrug. Bonds us in{' '}
+            <a href="https://example.com/indian-festivals-party-games" target="_blank" rel="noreferrer">
+              traditional Indian festivals
+            </a>
+            . Pure gold.
+          </p>
+          <p>Weddings? Early icebreaker. Sangeet staple.</p>
+
+          <h3>Resources for Free and Printable Tambola Tickets</h3>
+          <p>
+            Pinterest, TambolaKing-free tambola tickets PDFs flood. Check random fair; rigged suck. Shops bulk themes
+            cheap.
+          </p>
+          <p>
+            <a href="https://example.com/online-game-tools-bingo-tambola" target="_blank" rel="noreferrer">
+              bingo-style number generator
+            </a>
+            ? Infinite. Backyard flop to epic bash. Go make memories.
+          </p>
+
+          <div className="tool-cross-link">
+            <p>Ready to run your game?</p>
+            <Link to="/" className="button button-accent">
+              Open Tambola Number Generator
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
 
 function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -407,6 +804,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/tambola-tickets-generator" element={<TambolaTicketsPage />} />
       </Routes>
       <ScrollToTop />
     </>
