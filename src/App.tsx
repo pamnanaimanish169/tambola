@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
@@ -166,6 +166,35 @@ function TambolaTicketsPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
+  useEffect(() => {
+    const nextTitle = 'Free Tambola Tickets Generator | Printable Housie Tickets Online'
+    const nextDescription =
+      'Generate free tambola tickets instantly. Print or share housie tickets with perfect 1-90 number distribution. No signup needed — works on mobile and desktop.'
+
+    const previousTitle = document.title
+    const existingDescriptionTag = document.querySelector('meta[name="description"]')
+    const previousDescription = existingDescriptionTag?.getAttribute('content') ?? ''
+
+    document.title = nextTitle
+
+    let metaDescriptionTag = existingDescriptionTag
+    if (!metaDescriptionTag) {
+      metaDescriptionTag = document.createElement('meta')
+      metaDescriptionTag.setAttribute('name', 'description')
+      document.head.appendChild(metaDescriptionTag)
+    }
+    metaDescriptionTag.setAttribute('content', nextDescription)
+
+    return () => {
+      document.title = previousTitle
+      if (existingDescriptionTag) {
+        existingDescriptionTag.setAttribute('content', previousDescription)
+      } else {
+        metaDescriptionTag?.remove()
+      }
+    }
+  }, [])
+
   const generateTickets = () => {
     const parsedCount = Number(ticketCountInput)
     if (!Number.isInteger(parsedCount) || parsedCount < 1 || parsedCount > 100) {
@@ -199,7 +228,7 @@ function TambolaTicketsPage() {
   return (
     <div className="app">
       <header className="header" id="top">
-        <h1 className="title">Tambola Tickets Generator</h1>
+        <h1 className="title">Printable Tambola Tickets Online</h1>
       </header>
 
       <section className="tool-section tickets-tool-page" id="ticket-tool">
@@ -243,29 +272,31 @@ function TambolaTicketsPage() {
           </div>
 
           <div className="tickets-preview">
-            {!tickets.length && !isGenerating ? (
-              <p className="tickets-placeholder">Generate tickets to preview, print, or download.</p>
-            ) : null}
+            <div className="tickets-preview-content">
+              {!tickets.length && !isGenerating ? (
+                <p className="tickets-placeholder">Generate tickets to preview, print, or download.</p>
+              ) : null}
 
-            <div className="tickets-grid">
-              {tickets.map((ticket, ticketIndex) => (
-                <article className="ticket-card" key={`ticket-${ticketIndex + 1}`}>
-                  <h3>Ticket {ticketIndex + 1}</h3>
-                  <table className="ticket-table">
-                    <tbody>
-                      {ticket.map((row, rowIndex) => (
-                        <tr key={`row-${ticketIndex + 1}-${rowIndex + 1}`}>
-                          {row.map((cell, colIndex) => (
-                            <td key={`cell-${ticketIndex + 1}-${rowIndex + 1}-${colIndex + 1}`}>
-                              {cell ?? ''}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </article>
-              ))}
+              <div className="tickets-grid">
+                {tickets.map((ticket, ticketIndex) => (
+                  <article className="ticket-card" key={`ticket-${ticketIndex + 1}`}>
+                    <h3>Ticket {ticketIndex + 1}</h3>
+                    <table className="ticket-table">
+                      <tbody>
+                        {ticket.map((row, rowIndex) => (
+                          <tr key={`row-${ticketIndex + 1}-${rowIndex + 1}`}>
+                            {row.map((cell, colIndex) => (
+                              <td key={`cell-${ticketIndex + 1}-${rowIndex + 1}-${colIndex + 1}`}>
+                                {cell ?? ''}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </div>

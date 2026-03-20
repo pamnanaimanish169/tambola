@@ -1126,10 +1126,11 @@
 }
 
 .tickets-tool-shell {
+  --tickets-panel-height: 810px;
   display: grid;
   grid-template-columns: minmax(260px, 330px) 1fr;
   gap: var(--spacing-lg);
-  align-items: start;
+  align-items: stretch;
 }
 
 .tickets-controls,
@@ -1139,6 +1140,22 @@
   border-radius: 16px;
   padding: var(--spacing-md);
   box-shadow: var(--shadow-card);
+  min-height: var(--tickets-panel-height);
+}
+
+.tickets-preview {
+  display: flex;
+  flex-direction: column;
+  max-height: var(--tickets-panel-height);
+}
+
+.tickets-preview-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .tickets-controls h2 {
@@ -1181,13 +1198,31 @@
 .tickets-placeholder {
   color: var(--color-text-secondary);
   text-align: center;
-  margin-bottom: var(--spacing-md);
+  margin: auto;
 }
 
 .tickets-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--spacing-md);
+}
+
+.tickets-preview-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tickets-preview-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.tickets-preview-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.45);
+  border-radius: 10px;
+}
+
+.tickets-preview-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 212, 255, 0.65);
 }
 
 .ticket-card {
@@ -1229,9 +1264,37 @@
   color: var(--color-primary);
 }
 
+.tickets-seo-content .tool-cross-link .button.button-accent {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+@media (max-width: 1240px) {
+  .tickets-tool-page {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+
+  .tickets-tool-shell {
+    gap: var(--spacing-md);
+  }
+}
+
 @media (max-width: 920px) {
   .tickets-tool-shell {
     grid-template-columns: 1fr;
+  }
+
+  .tickets-controls,
+  .tickets-preview {
+    min-height: auto;
+    max-height: none;
+  }
+
+  .tickets-preview-content {
+    overflow-y: visible;
+    padding-right: 0;
   }
 }
 
