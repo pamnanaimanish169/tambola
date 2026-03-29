@@ -5,13 +5,15 @@ import {
   useRef,
   useState,
 } from "react";
-import { Routes, Route } from "react-router-dom";
+
 import { Link } from "react-router-dom";
-import ScrollToTop from "./components/ScrollToTop";
-import RouteScrollToTop from "./components/RouteScrollToTop";
+import { Routes, Route } from "react-router-dom";
+
 import "./App.css";
 import "./components/NumberGenerator.css";
 import NumberGenerator from "./components/NumberGenerator";
+import RouteScrollToTop from "./components/RouteScrollToTop";
+import ScrollToTop from "./components/ScrollToTop";
 import SiteLogo from "./components/SiteLogo";
 import TambolaCaller from "./components/TambolaCaller";
 
@@ -475,9 +477,7 @@ function TambolaTicketsPage() {
     }
     const ro = new ResizeObserver(() => syncTicketsPreviewHeight());
     ro.observe(controls);
-    const mq = window.matchMedia(
-      `(min-width: ${TICKETS_TWO_COLUMN_MIN_PX}px)`,
-    );
+    const mq = window.matchMedia(`(min-width: ${TICKETS_TWO_COLUMN_MIN_PX}px)`);
     const onViewportChange = () => syncTicketsPreviewHeight();
     mq.addEventListener("change", onViewportChange);
     window.addEventListener("resize", onViewportChange);

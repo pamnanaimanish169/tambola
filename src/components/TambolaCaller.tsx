@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   useCallback,
   useEffect,
@@ -6,9 +7,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { Link } from "react-router-dom";
-import { tambolaCalls } from "../data/tambolaCalls";
+
 import "./TambolaCaller.css";
+import { tambolaCalls } from "../data/tambolaCalls";
 
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -78,7 +79,11 @@ function buildAnnouncement(num: number): string {
 const AUTO_INTERVALS = [3, 5, 8, 10] as const;
 
 export default function TambolaCaller() {
-  const [state, dispatch] = useReducer(callerReducer, undefined, initialCallerState);
+  const [state, dispatch] = useReducer(
+    callerReducer,
+    undefined,
+    initialCallerState,
+  );
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [voicesReady, setVoicesReady] = useState(
     () =>
@@ -311,11 +316,7 @@ export default function TambolaCaller() {
             auto-call for remote games or tap the buttons below.
           </p>
 
-          <div
-            className="caller-current"
-            aria-live="polite"
-            aria-atomic="true"
-          >
+          <div className="caller-current" aria-live="polite" aria-atomic="true">
             {state.current !== null ? (
               <>
                 <div className="caller-big-number">{state.current}</div>
@@ -402,7 +403,11 @@ export default function TambolaCaller() {
 
         <div className="caller-panel caller-panel--board">
           <h3 className="caller-board-title">Board (1–90)</h3>
-          <div className="caller-board-grid" role="grid" aria-label="Numbers 1 to 90">
+          <div
+            className="caller-board-grid"
+            role="grid"
+            aria-label="Numbers 1 to 90"
+          >
             {Array.from({ length: 90 }, (_, i) => i + 1).map((num) => {
               const isCalled = calledSet.has(num);
               const isCurrent = state.current === num;
@@ -437,10 +442,7 @@ export default function TambolaCaller() {
 
       <div className="caller-cross">
         <p>Need printable tickets?</p>
-        <Link
-          to="/tambola-tickets-generator"
-          className="button button-accent"
-        >
+        <Link to="/tambola-tickets-generator" className="button button-accent">
           Tambola tickets generator
         </Link>
         <Link to="/" className="caller-link-home">

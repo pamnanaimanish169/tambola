@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { tambolaCalls } from "../data/tambolaCalls";
+import { useState, useEffect, useCallback, useMemo } from "react";
+
 import "./NumberGenerator.css";
+import { tambolaCalls } from "../data/tambolaCalls";
 
 const STORAGE_KEY = "tambola-generator-state";
 
