@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { tambolaCalls } from "../data/tambolaCalls";
 import "./NumberGenerator.css";
@@ -64,6 +64,10 @@ function NumberGenerator({ embedded = false }: NumberGeneratorProps) {
   );
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState("");
+
+  /** Homepage embed: only the first five voices from the browser list. */
+  const sampleVoices = useMemo(() => voices.slice(0, 5), [voices]);
+  const voicesForSelect = embedded ? sampleVoices : voices;
 
   const getSpokenText = useCallback((num: number) => {
     const digitByDigit = num
@@ -141,19 +145,44 @@ function NumberGenerator({ embedded = false }: NumberGeneratorProps) {
       return;
     }
 
+    const pool = embedded ? sampleVoices : voices;
+    if (!pool.length) {
+      return;
+    }
+
     const preferredVoice =
-      voices.find(
+      pool.find(
         (voice) =>
           voice.lang.toLowerCase().startsWith("en-in") ||
           voice.lang.toLowerCase().startsWith("hi-in"),
       ) ||
-      voices.find((voice) => voice.default) ||
-      voices[0];
+      pool.find((voice) => voice.default) ||
+      pool[0];
 
     if (preferredVoice) {
       setSelectedVoiceURI(preferredVoice.voiceURI);
     }
-  }, [voices, selectedVoiceURI]);
+  }, [voices, selectedVoiceURI, embedded, sampleVoices]);
+
+  useEffect(() => {
+    if (!embedded || !sampleVoices.length) {
+      return;
+    }
+    if (sampleVoices.some((v) => v.voiceURI === selectedVoiceURI)) {
+      return;
+    }
+    const preferredVoice =
+      sampleVoices.find(
+        (voice) =>
+          voice.lang.toLowerCase().startsWith("en-in") ||
+          voice.lang.toLowerCase().startsWith("hi-in"),
+      ) ||
+      sampleVoices.find((voice) => voice.default) ||
+      sampleVoices[0];
+    if (preferredVoice) {
+      setSelectedVoiceURI(preferredVoice.voiceURI);
+    }
+  }, [embedded, sampleVoices, selectedVoiceURI]);
 
   useEffect(() => {
     return () => {
@@ -242,12 +271,12 @@ function NumberGenerator({ embedded = false }: NumberGeneratorProps) {
               id="voice-select"
               value={selectedVoiceURI}
               onChange={(event) => setSelectedVoiceURI(event.target.value)}
-              disabled={!voices.length}
+              disabled={!voicesForSelect.length}
             >
-              {voices.length === 0 ? (
+              {voicesForSelect.length === 0 ? (
                 <option value="">No voices found</option>
               ) : (
-                voices.map((voice) => (
+                voicesForSelect.map((voice) => (
                   <option key={voice.voiceURI} value={voice.voiceURI}>
                     {voice.name} ({voice.lang})
                   </option>
@@ -333,12 +362,18 @@ function NumberGenerator({ embedded = false }: NumberGeneratorProps) {
             </div>
 
             <div className="tool-cross-link">
-              <p>Need tickets before your next round?</p>
+              <p>Need tickets or a full voice caller?</p>
               <Link
                 to="/tambola-tickets-generator"
                 className="button button-accent"
               >
                 Generate Tambola Tickets
+              </Link>
+              <Link
+                to="/online-tambola-caller"
+                className="button button-secondary-link"
+              >
+                Online tambola caller (1–90)
               </Link>
             </div>
           </div>

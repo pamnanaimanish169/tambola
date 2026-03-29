@@ -1,13 +1,24 @@
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { Routes, Route } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import RouteScrollToTop from "./components/RouteScrollToTop";
 import "./App.css";
 import "./components/NumberGenerator.css";
 import NumberGenerator from "./components/NumberGenerator";
+import SiteLogo from "./components/SiteLogo";
+import TambolaCaller from "./components/TambolaCaller";
 
 type TicketCell = number | null;
 type TicketGrid = TicketCell[][];
+
+const TICKETS_TWO_COLUMN_MIN_PX = 921;
 
 const COLUMN_RANGES: Array<[number, number]> = [
   [1, 9],
@@ -162,11 +173,334 @@ function generateSingleTicket(): TicketGrid {
   return grid;
 }
 
+function OnlineTambolaCallerPage() {
+  const [isCallerMenuOpen, setIsCallerMenuOpen] = useState(false);
+
+  const toggleCallerMenu = () => {
+    setIsCallerMenuOpen((open) => !open);
+  };
+
+  const closeCallerMenu = () => {
+    setIsCallerMenuOpen(false);
+  };
+
+  useEffect(() => {
+    const nextTitle =
+      "Online Tambola Caller | Virtual Housie Number Caller 1–90";
+    const nextDescription =
+      "Free online tambola caller for Housie: shuffled 1–90 calls, voice phrases, board, history, auto-call. Browser-only, no signup.";
+
+    const previousTitle = document.title;
+    const existingDescriptionTag = document.querySelector(
+      'meta[name="description"]',
+    );
+    const previousDescription =
+      existingDescriptionTag?.getAttribute("content") ?? "";
+
+    document.title = nextTitle;
+
+    let metaDescriptionTag = existingDescriptionTag;
+    if (!metaDescriptionTag) {
+      metaDescriptionTag = document.createElement("meta");
+      metaDescriptionTag.setAttribute("name", "description");
+      document.head.appendChild(metaDescriptionTag);
+    }
+    metaDescriptionTag.setAttribute("content", nextDescription);
+
+    return () => {
+      document.title = previousTitle;
+      if (existingDescriptionTag) {
+        existingDescriptionTag.setAttribute("content", previousDescription);
+      } else {
+        metaDescriptionTag?.remove();
+      }
+    };
+  }, []);
+
+  return (
+    <div className="app">
+      <nav className="nav">
+        <div className="nav-row">
+          <SiteLogo />
+          <div className="nav-desktop">
+            <Link to="/" className="nav-link">
+              Home
+            </Link>
+            <Link to="/online-tambola-caller" className="nav-link">
+              Caller
+            </Link>
+            <Link to="/tambola-tickets-generator" className="nav-link">
+              Tickets
+            </Link>
+          </div>
+          <button
+            type="button"
+            className="hamburger"
+            onClick={toggleCallerMenu}
+            aria-label="Toggle menu"
+          >
+            <span
+              className={`hamburger-line ${isCallerMenuOpen ? "open" : ""}`}
+            ></span>
+            <span
+              className={`hamburger-line ${isCallerMenuOpen ? "open" : ""}`}
+            ></span>
+            <span
+              className={`hamburger-line ${isCallerMenuOpen ? "open" : ""}`}
+            ></span>
+          </button>
+        </div>
+        <div className={`mobile-menu ${isCallerMenuOpen ? "open" : ""}`}>
+          <Link to="/" className="mobile-nav-link" onClick={closeCallerMenu}>
+            Home
+          </Link>
+          <Link
+            to="/online-tambola-caller"
+            className="mobile-nav-link"
+            onClick={closeCallerMenu}
+          >
+            Caller
+          </Link>
+          <Link
+            to="/tambola-tickets-generator"
+            className="mobile-nav-link"
+            onClick={closeCallerMenu}
+          >
+            Tickets
+          </Link>
+        </div>
+      </nav>
+
+      <header className="header" id="top">
+        <h1 className="title">Online Tambola Caller</h1>
+      </header>
+
+      <section className="tool-section tickets-tool-page" id="caller-tool">
+        <TambolaCaller />
+      </section>
+
+      <section
+        className="content-section caller-seo-content tickets-seo-content"
+        id="content"
+      >
+        <div className="content-wrapper">
+          <h2>Online Tambola Caller: Revolutionizing Virtual Housie Games</h2>
+          <p>
+            Okay, real talk. Last Diwali, my Jaipur family&apos;s all over—me
+            here, sis in Mumbai, dad in the village. How do we do Tambola? Some
+            magic online tambola caller app. No shouting over neighborhood
+            noise, no printing 50 tickets. Just hit play, and it calls
+            &quot;Eighty-eight, two fat ladies!&quot; Everyone&apos;s screaming
+            on video. You know that buzz? This is it, digital style. Back in
+            2020 lockdown, these things blew up—India&apos;s gaming went nuts,
+            billions in play (Statista had the numbers). If you&apos;re tired of
+            flaking plans, grab an online tambola caller. Better than a tambola
+            number caller uncle who skips your lucky number.
+          </p>
+
+          <h3>What Even Is an Online Tambola Caller?</h3>
+          <p>
+            It&apos;s your digital MC for Housie—picks 1-90 random, yells
+            &apos;em out loud, syncs for the group. Grids stay 3x9, prizes for
+            lines or full house. I first tried one at a boring office call;
+            turned it into party central. Old game books (like that 1971 one by
+            Avedon guys) say random keeps it fair and fun. Live callers add
+            jokes, sure, but apps? No bias, no booze breaks. Ratings? Mostly
+            4.5+ on stores. Miss the human touch? Eh, voice tech fools ya now.
+          </p>
+
+          <h3>Tambola&apos;s Wild Ride from Halls to Phones</h3>
+          <p>
+            Grew up with it—British Housie hits India, becomes our wedding
+            staple. Callers rhyming &quot;Kelly&apos;s eye, number one!&quot;
+            Pure nostalgia. Early days, community centers packed. Then internet.
+            Flash games in 2000s were meh. Smartphones? Boom, 2015-ish apps hit.
+            Lockdown sealed it—PwC says $1.5B gaming pot, Tambola apps killing
+            it. My cousin won 500 bucks virtual-style from his cab. Purists
+            whine &quot;no feel,&quot; but c&apos;mon, Jaipur traffic alone
+            makes digital a win.
+          </p>
+
+          <h3>Features That Make Tambola Number Caller Apps Shine</h3>
+          <p>Hunt these, or you&apos;re stuck with crap.</p>
+
+          <h4>Number Magic and Voices That Nail It</h4>
+          <p>
+            Random? Not casino-rigged—uses your phone&apos;s chaos for true
+            picks, lab-checked. Voices sound real, Hindi twang or posh English.
+            Google tech makes &apos;em lifelike; calls fly fast, under a blink
+            (those ACM nerds measured). Link{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              bulletproof random picks
+            </a>{" "}
+            if you&apos;re paranoid.
+          </p>
+
+          <h4>Boards and Multiplayer Hacks</h4>
+          <p>
+            Theme your cards—cricket scores, movie stars. Lobbies pack 50+,
+            zippy connections. Plug into{" "}
+            <a
+              href="https://zoom.us/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              group video tools
+            </a>
+            . Whip up boards with{" "}
+            <a
+              href="https://www.canva.com/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              quick board creators
+            </a>
+            . Chaos, but good chaos.
+          </p>
+
+          <h3>Bingo Caller Online: Same-Same but Different</h3>
+          <p>
+            Bingo caller online does 75 balls, letters—B-14 stuff. Tambola?
+            Straight numbers, our style. Both need clear shouts, visuals. But
+            here, Tambola rules apps (App Annie stats). Tweak a bingo caller
+            online for Housie? Works, kinda. Like adapting pizza for dosa—close,
+            not quite.
+          </p>
+
+          <h3>My Go-To Online Bingo Caller Picks (Tested!)</h3>
+          <p>Wasted hours on these. Winners only.</p>
+
+          <h4>Free Sites for Lazy Setups</h4>
+          <p>
+            TambolaOnline.com—chat, no ads killing vibe. 4.7 Trustpilot love.
+            BingoBaker—flip to Tambola, screen-share. Zero hassle.
+          </p>
+
+          <h4>Pocket Apps for Anywhere</h4>
+          <p>
+            Tambola Caller: Offline hero, voices galore, 1M+ fans. Bingo Caller
+            Pro: AR boards wow kids. Virtual Housie mixes online bingo caller
+            with ours—Android crushes, iOS meh on sound.
+          </p>
+
+          <h3>The Good, Bad, and Ugly of Digital Tambola</h3>
+          <p>
+            Good: Joins from anywhere, cheap, scales huge. My 40-person game?
+            Free. Bad: WiFi drops murder it, villages suffer (World Bank calls
+            it out). Ugly: Cheaters, cash rules—check{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Gambling_in_India"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              local gaming laws
+            </a>
+            . Still, I&apos;d pick digital 9/10 times.
+          </p>
+
+          <h3>Tips to Crush Your Next Online Tambola Bash</h3>
+          <p>
+            Mic check first—wired wins. Fun calls: &quot;Legs eleven, 11!&quot;
+            Chat rules upfront. Pace it—5 secs/number. Photo proofs for fights.
+            App insights tweak next round. More inspo at{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Party_game"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              family game hacks
+            </a>
+            . You&apos;ll own it.
+          </p>
+
+          <p>
+            Dive in, yaar. Online tambola caller saved my holidays—yours next?
+          </p>
+
+          <div className="tool-cross-link">
+            <p>Try the number generator or printable tickets too.</p>
+            <Link to="/" className="button button-accent">
+              Tambola number generator
+            </Link>
+            <Link
+              to="/tambola-tickets-generator"
+              className="button button-secondary-link caller-seo-secondary-cta"
+            >
+              Printable tambola tickets
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function TambolaTicketsPage() {
   const [ticketCountInput, setTicketCountInput] = useState("6");
   const [tickets, setTickets] = useState<TicketGrid[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const ticketsShellRef = useRef<HTMLDivElement>(null);
+  const ticketsControlsRef = useRef<HTMLDivElement>(null);
+
+  const syncTicketsPreviewHeight = useCallback(() => {
+    const shell = ticketsShellRef.current;
+    const controls = ticketsControlsRef.current;
+    if (!shell || !controls) {
+      return;
+    }
+    if (
+      typeof window !== "undefined" &&
+      !window.matchMedia(`(min-width: ${TICKETS_TWO_COLUMN_MIN_PX}px)`).matches
+    ) {
+      shell.style.removeProperty("--tickets-controls-height");
+      return;
+    }
+    shell.style.setProperty(
+      "--tickets-controls-height",
+      `${controls.offsetHeight}px`,
+    );
+  }, []);
+
+  useLayoutEffect(() => {
+    syncTicketsPreviewHeight();
+    const controls = ticketsControlsRef.current;
+    if (!controls || typeof ResizeObserver === "undefined") {
+      return;
+    }
+    const ro = new ResizeObserver(() => syncTicketsPreviewHeight());
+    ro.observe(controls);
+    const mq = window.matchMedia(
+      `(min-width: ${TICKETS_TWO_COLUMN_MIN_PX}px)`,
+    );
+    const onViewportChange = () => syncTicketsPreviewHeight();
+    mq.addEventListener("change", onViewportChange);
+    window.addEventListener("resize", onViewportChange);
+    return () => {
+      ro.disconnect();
+      mq.removeEventListener("change", onViewportChange);
+      window.removeEventListener("resize", onViewportChange);
+    };
+  }, [
+    syncTicketsPreviewHeight,
+    tickets.length,
+    errorMessage,
+    ticketCountInput,
+    isGenerating,
+  ]);
+
+  const toggleTicketsMenu = () => {
+    setIsMenuOpen((open) => !open);
+  };
+
+  const closeTicketsMenu = () => {
+    setIsMenuOpen(false);
+  };
 
   useEffect(() => {
     const nextTitle =
@@ -243,13 +577,65 @@ function TambolaTicketsPage() {
 
   return (
     <div className="app">
+      <nav className="nav">
+        <div className="nav-row">
+          <SiteLogo />
+          <div className="nav-desktop">
+            <Link to="/" className="nav-link">
+              Home
+            </Link>
+            <Link to="/online-tambola-caller" className="nav-link">
+              Caller
+            </Link>
+            <Link to="/tambola-tickets-generator" className="nav-link">
+              Tickets
+            </Link>
+          </div>
+          <button
+            type="button"
+            className="hamburger"
+            onClick={toggleTicketsMenu}
+            aria-label="Toggle menu"
+          >
+            <span
+              className={`hamburger-line ${isMenuOpen ? "open" : ""}`}
+            ></span>
+            <span
+              className={`hamburger-line ${isMenuOpen ? "open" : ""}`}
+            ></span>
+            <span
+              className={`hamburger-line ${isMenuOpen ? "open" : ""}`}
+            ></span>
+          </button>
+        </div>
+        <div className={`mobile-menu ${isMenuOpen ? "open" : ""}`}>
+          <Link to="/" className="mobile-nav-link" onClick={closeTicketsMenu}>
+            Caller
+          </Link>
+          <Link
+            to="/online-tambola-caller"
+            className="mobile-nav-link"
+            onClick={closeTicketsMenu}
+          >
+            Caller
+          </Link>
+          <Link
+            to="/tambola-tickets-generator"
+            className="mobile-nav-link"
+            onClick={closeTicketsMenu}
+          >
+            Tickets
+          </Link>
+        </div>
+      </nav>
+
       <header className="header" id="top">
         <h1 className="title">Printable Tambola Tickets Online</h1>
       </header>
 
       <section className="tool-section tickets-tool-page" id="ticket-tool">
-        <div className="tickets-tool-shell">
-          <div className="tickets-controls">
+        <div className="tickets-tool-shell" ref={ticketsShellRef}>
+          <div className="tickets-controls" ref={ticketsControlsRef}>
             <h2>Free Tambola Tickets Tool</h2>
             <p>
               Generate valid 3-row x 9-column housie tickets (15 numbers per
@@ -290,9 +676,15 @@ function TambolaTicketsPage() {
               >
                 Print / Download PDF
               </button>
-              <a href="/#tool" className="button button-secondary-link">
+              <Link to="/#tool" className="button button-secondary-link">
                 Go to Number Generator
-              </a>
+              </Link>
+              <Link
+                to="/online-tambola-caller"
+                className="button button-secondary-link"
+              >
+                Online tambola caller
+              </Link>
             </div>
 
             {errorMessage ? (
@@ -301,7 +693,19 @@ function TambolaTicketsPage() {
           </div>
 
           <div className="tickets-preview">
-            <div className="tickets-preview-content">
+            <div
+              className={
+                tickets.length > 6
+                  ? "tickets-preview-content tickets-preview-content--scrollable"
+                  : "tickets-preview-content"
+              }
+              role={tickets.length > 6 ? "region" : undefined}
+              aria-label={
+                tickets.length > 6
+                  ? "Generated tickets, scroll to see more"
+                  : undefined
+              }
+            >
               {!tickets.length && !isGenerating ? (
                 <p className="tickets-placeholder">
                   Generate tickets to preview, print, or download.
@@ -345,26 +749,44 @@ function TambolaTicketsPage() {
             Okay, imagine the scene-chaotic living room, aunties with tambola
             tickets fanned out like poker pros, kids underfoot, and bam,
             &quot;Lines!&quot; echoes as some number drops. Tambola tickets?
-            They&apos;re the soul of the housie game, that bingo-on-steroids we
-            Indians can&apos;t quit. Diwali at my place in Jaipur? These cards
-            turn grumpy relatives into hype beasts. Hunting free tambola tickets
-            or printable tambola tickets for your next do? Stick around.
-            I&apos;ll spill the beans on where they came from, what makes
-            &apos;em tick, and yeah, how to cheat the odds without getting
-            caught. Luck&apos;s fun, but who wants to lose every round?
+            They&apos;re the soul of the{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Housie"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              housie game
+            </a>
+            , that bingo-on-steroids we Indians can&apos;t quit. Diwali at my
+            place in Jaipur? These cards turn grumpy relatives into hype beasts.
+            Hunting free tambola tickets or printable tambola tickets for your
+            next do? Stick around. I&apos;ll spill the beans on where they came
+            from, what makes &apos;em tick, and yeah, how to cheat the odds
+            without getting caught. Luck&apos;s fun, but who wants to lose every
+            round?
           </p>
           <p>
             Why does it hook you? Pure adrenaline. 27 spots, numbers 1-90. Snag
             printable ones, yell calls, drama explodes. Old pics say it kicked
-            off in colonial days. Details incoming.
+            off in colonial days. Details incoming. For the actual draw, pair
+            tickets with our <Link to="/">tambola number generator</Link> or the{" "}
+            <Link to="/online-tambola-caller">online tambola caller</Link>—same
+            site, zero signup.
           </p>
 
           <h3>Historical Evolution of Tambola Tickets</h3>
           <p>
-            1920s. Brits dock in Mumbai, bored sailors peddle bingo. Locals grab
-            it, tweak into tambola tickets by &apos;30s-bolder, cheaper than
-            stiff UK cards. Flipped through Rajasthan fair posters once
-            (uncle&apos;s attic goldmine); newsprint beasts yelling
+            1920s. Brits dock in Mumbai, bored sailors peddle{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Bingo_(British_version)"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              bingo
+            </a>
+            . Locals grab it, tweak into tambola tickets by &apos;30s-bolder,
+            cheaper than stiff UK cards. Flipped through Rajasthan fair posters
+            once (uncle&apos;s attic goldmine); newsprint beasts yelling
             &quot;everyone wins!&quot;
           </p>
           <p>
@@ -403,34 +825,65 @@ function TambolaTicketsPage() {
             like Diwali sweets.
           </p>
           <p>
-            COVID? Apps for virtual housie game. Zoom cheers, okay-ish. Paper
-            wins. Speed it, reverse-chaos gold.
-            {/* <a href="https://example.com/party-games-event-planning-guide" target="_blank" rel="noreferrer">
+            COVID? Apps for virtual housie game.{" "}
+            <a
+              href="https://zoom.us/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Zoom
+            </a>{" "}
+            cheers, okay-ish. Paper wins. Speed it, reverse-chaos gold.{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Event_management"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               Event planning tips
-            </a>{' '} */}
-            Event planning tips save your ass.
+            </a>{" "}
+            save your ass.
           </p>
 
           <h3>Creating Printable Tambola Tickets at Home</h3>
           <p>
-            Skip stores. Excel hack: =RANDBETWEEN(1,9) column 1, etc. Random
-            magic. Print. Snip. Party.
+            Skip stores.{" "}
+            <a
+              href="https://support.microsoft.com/excel"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Excel
+            </a>{" "}
+            hack: =RANDBETWEEN(1,9) column 1, etc. Random magic. Print. Snip.
+            Party.
           </p>
 
           <h3>Tools for Custom Housie Game Sheets</h3>
           <p>
-            Canva rules printable tambola tickets-drag crap, theme, PDF. Code
-            monkeys? Python + QR scanner. 300 DPI. Laminate for{" "}
-            {/* <a
-              href="https://example.com/family-entertainment-games"
+            <a
+              href="https://www.canva.com/"
               target="_blank"
-              rel="noreferrer"
+              rel="noreferrer noopener"
+            >
+              Canva
+            </a>{" "}
+            rules printable tambola tickets-drag crap, theme, PDF. Code monkeys?
+            Python + QR scanner. 300 DPI. Laminate for{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Party_game"
+              target="_blank"
+              rel="noreferrer noopener"
             >
               family game nights
-            </a>{" "} */}
-              family game nights reruns. Scrap test first, or ink hell.
+            </a>{" "}
+            reruns. Scrap test first, or ink hell.
           </p>
-          <p>Oh, forgot: free templates everywhere. Tinker away.</p>
+          <p>
+            Oh, forgot: free templates everywhere. Tinker away—or use the{" "}
+            <Link to="/">number generator</Link> and{" "}
+            <Link to="/online-tambola-caller">caller tool</Link> here when you
+            play.
+          </p>
 
           <h3>Rules and Strategies for Winning with Tambola Tickets</h3>
           <p>
@@ -440,14 +893,14 @@ function TambolaTicketsPage() {
           <p>
             Edge it: mid-heavy tambola tickets (30-60). Callers crawl low-high.
             Log misses-late surges. Sims say nudge. Luck queen tho.{" "}
-            {/* <a
-              href="https://example.com/diy-party-ideas-supplies"
+            <a
+              href="https://en.wikipedia.org/wiki/Party#Parties_on_special_occasions"
               target="_blank"
-              rel="noreferrer"
+              rel="noreferrer noopener"
             >
               DIY party supplies
-            </a>{" "} */}
-              DIY party supplies kit it out.
+            </a>{" "}
+            kit it out.
           </p>
           <p>Uncle once palmed a number. Scandal. Don&apos;t.</p>
 
@@ -465,14 +918,14 @@ function TambolaTicketsPage() {
           </p>
           <p>
             Skill or bet? Courts shrug. Bonds us in{" "}
-            {/* <a
-              href="https://example.com/indian-festivals-party-games"
+            <a
+              href="https://en.wikipedia.org/wiki/List_of_Indian_festivals"
               target="_blank"
-              rel="noreferrer"
+              rel="noreferrer noopener"
             >
               traditional Indian festivals
-            </a> */}
-            traditional Indian festivals. Pure gold.
+            </a>
+            . Pure gold.
           </p>
           <p>Weddings? Early icebreaker. Sangeet staple.</p>
 
@@ -482,14 +935,8 @@ function TambolaTicketsPage() {
             fair; rigged suck. Shops bulk themes cheap.
           </p>
           <p>
-            {/* <a
-              href="https://example.com/online-game-tools-bingo-tambola"
-              target="_blank"
-              rel="noreferrer"
-            >
-              bingo-style number generator
-            </a> */}
-            Bingo-style number generator? Infinite. Backyard flop to epic bash. Go make memories.
+            <Link to="/">Bingo-style number generator</Link>? Infinite. Backyard
+            flop to epic bash. Go make memories.
           </p>
 
           <div className="tool-cross-link">
@@ -497,9 +944,41 @@ function TambolaTicketsPage() {
             <Link to="/" className="button button-accent">
               Open Tambola Number Generator
             </Link>
+            <Link
+              to="/online-tambola-caller"
+              className="button button-secondary-link caller-seo-secondary-cta"
+            >
+              Online tambola caller
+            </Link>
           </div>
         </div>
       </section>
+
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="footer-brand">
+            <SiteLogo className="site-logo--footer" />
+          </div>
+          <p>
+            &copy; 2026 Tambola Game. Printable tickets, number draw, and
+            caller—free in the browser.
+          </p>
+          <div className="footer-links">
+            <Link to="/" className="footer-link">
+              Home &amp; number generator
+            </Link>
+            <Link to="/#tool" className="footer-link">
+              Play on home
+            </Link>
+            <Link to="/online-tambola-caller" className="footer-link">
+              Online caller
+            </Link>
+            <a href="#top" className="footer-link">
+              Back to Top
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -519,42 +998,54 @@ function HomePage() {
     <div className="app">
       {/* Navigation */}
       <nav className="nav">
-        <div className="nav-desktop">
-          <a href="#tool" className="nav-link">
-            Play Now
-          </a>
-          <a href="#features" className="nav-link">
-            Features
-          </a>
-          <a href="#use-cases" className="nav-link">
-            Use Cases
-          </a>
-          <a href="#faq" className="nav-link">
-            FAQ
-          </a>
+        <div className="nav-row">
+          <SiteLogo />
+          <div className="nav-desktop">
+            <Link to="/" className="nav-link">
+              Home
+            </Link>
+            <Link to="/online-tambola-caller" className="nav-link">
+              Caller
+            </Link>
+            <Link to="/tambola-tickets-generator" className="nav-link">
+              Tickets
+            </Link>
+          </div>
+          <button
+            type="button"
+            className="hamburger"
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            <span
+              className={`hamburger-line ${isMenuOpen ? "open" : ""}`}
+            ></span>
+            <span
+              className={`hamburger-line ${isMenuOpen ? "open" : ""}`}
+            ></span>
+            <span
+              className={`hamburger-line ${isMenuOpen ? "open" : ""}`}
+            ></span>
+          </button>
         </div>
-        <button
-          className="hamburger"
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
-        >
-          <span className={`hamburger-line ${isMenuOpen ? "open" : ""}`}></span>
-          <span className={`hamburger-line ${isMenuOpen ? "open" : ""}`}></span>
-          <span className={`hamburger-line ${isMenuOpen ? "open" : ""}`}></span>
-        </button>
         <div className={`mobile-menu ${isMenuOpen ? "open" : ""}`}>
-          <a href="#tool" className="mobile-nav-link" onClick={closeMenu}>
-            Play Now
-          </a>
-          <a href="#features" className="mobile-nav-link" onClick={closeMenu}>
-            Features
-          </a>
-          <a href="#use-cases" className="mobile-nav-link" onClick={closeMenu}>
-            Use Cases
-          </a>
-          <a href="#faq" className="mobile-nav-link" onClick={closeMenu}>
-            FAQ
-          </a>
+          <Link to="/" className="mobile-nav-link" onClick={closeMenu}>
+            Home
+          </Link>
+          <Link
+            to="/online-tambola-caller"
+            className="mobile-nav-link"
+            onClick={closeMenu}
+          >
+            Caller
+          </Link>
+          <Link
+            to="/tambola-tickets-generator"
+            className="mobile-nav-link"
+            onClick={closeMenu}
+          >
+            Tickets
+          </Link>
         </div>
       </nav>
 
@@ -576,9 +1067,17 @@ function HomePage() {
           <h2>Tambola Number Generator – Why Everyone's Playing It Online</h2>
 
           <p>
-            If you've ever sat around a dining table covered in housie tickets
-            while someone excitedly shouts numbers, you already know the magic
-            of tambola. It's been a part of almost every Indian celebration —
+            If you&apos;ve ever sat around a dining table covered in housie
+            tickets while someone excitedly shouts numbers, you already know the
+            magic of{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Housie"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              tambola
+            </a>
+            . It&apos;s been a part of almost every Indian celebration —
             birthdays, housing society get-togethers, school fairs, family
             parties… you name it.
           </p>
@@ -593,9 +1092,16 @@ function HomePage() {
           </p>
 
           <p>
-            Whether you're planning a quick office game over Zoom, a school
-            activity for kids, or just a chilled-out session with cousins on a
-            Sunday night, this little tool can handle it all.
+            Whether you&apos;re planning a quick office game over{" "}
+            <a
+              href="https://zoom.us/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Zoom
+            </a>
+            , a school activity for kids, or just a chilled-out session with
+            cousins on a Sunday night, this little tool can handle it all.
           </p>
 
           <hr />
@@ -674,9 +1180,16 @@ function HomePage() {
           </p>
 
           <p>
-            Teachers use it to teach numbers, patterns, or even probability.
-            Kids stay hooked because it feels like play. Parents say it's a
-            great way to engage kids after school without forcing them into
+            Teachers use it to teach numbers, patterns, or even{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Probability"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              probability
+            </a>
+            . Kids stay hooked because it feels like play. Parents say it&apos;s
+            a great way to engage kids after school without forcing them into
             worksheets.
           </p>
 
@@ -690,18 +1203,26 @@ function HomePage() {
           <h3>Housie Ticket Generator – The Perfect Pair</h3>
 
           <p>
-            A tambola game isn't complete without tickets. And that's where the{" "}
-            <strong>housie ticket generator</strong> comes in handy. It creates
-            digital tickets automatically — usually 3 rows with 15 numbers
-            spread out, just like printed ones.
+            A tambola game isn&apos;t complete without tickets. And that&apos;s
+            where the{" "}
+            <Link to="/tambola-tickets-generator">
+              <strong>housie ticket generator</strong>
+            </Link>{" "}
+            comes in handy. It creates digital tickets automatically — usually 3
+            rows with 15 numbers spread out, just like printed ones.
           </p>
 
           <p>
             You can share them over WhatsApp, or let guests print them if they
-            prefer the old-school feel. Each ticket is unique, and there's no
-            manual designing or printing headache. It's the ideal partner to the
-            number generator. One handles the draw, the other handles the
-            tickets. Simple teamwork!
+            prefer the old-school feel. Each ticket is unique, and there&apos;s
+            no manual designing or printing headache. It&apos;s the ideal
+            partner to the number generator. One handles the draw, the other
+            handles the tickets. Simple teamwork! Want voiced calls and a
+            dedicated caller board? Use the{" "}
+            <Link to="/online-tambola-caller">
+              online tambola caller (1–90)
+            </Link>{" "}
+            alongside tickets.
           </p>
 
           <hr />
@@ -733,10 +1254,18 @@ function HomePage() {
           </ul>
 
           <p>
-            I've personally hosted tambola nights with relatives across five
-            cities using just a free generator and a Zoom link. The amount of
-            laughter that happens when everyone yells "Oh, I just missed it!" —
-            it's the most comforting chaos.
+            I&apos;ve personally hosted tambola nights with relatives across
+            five cities using just a free generator and a{" "}
+            <a
+              href="https://zoom.us/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Zoom
+            </a>{" "}
+            link. The amount of laughter that happens when everyone yells
+            &quot;Oh, I just missed it!&quot; — it&apos;s the most comforting
+            chaos.
           </p>
 
           <hr />
@@ -746,9 +1275,17 @@ function HomePage() {
           <p>
             One big worry in traditional tambola was callers repeating a number
             or skipping one. Online tools remove that worry entirely. The
-            generator uses randomization logic — that's just a fancy way of
-            saying every number has the same chance of being picked. Once
-            called, it's locked out for that round.
+            generator uses{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              randomization logic
+            </a>{" "}
+            — that&apos;s just a fancy way of saying every number has the same
+            chance of being picked. Once called, it&apos;s locked out for that
+            round.
           </p>
 
           <p>
@@ -770,9 +1307,9 @@ function HomePage() {
           </p>
 
           <p>
-            It may be digital now, but the feeling hasn't changed one bit. It's
-            still that same mix of anticipation, laughter, and small victories
-            that make tambola so addictive.
+            It may be digital now, but the feeling hasn&apos;t changed one bit.
+            It&apos;s still that same mix of anticipation, laughter, and small
+            victories that make tambola so addictive.
           </p>
 
           <hr />
@@ -780,9 +1317,12 @@ function HomePage() {
           <h3>Blending Old-School & New-School</h3>
 
           <p>
-            Some people like the hybrid approach — they print out old-style
-            tickets but use the <strong>online tambola number generator</strong>{" "}
-            for calling. That way, you get the best of both worlds — a pinch of
+            Some people like the hybrid approach — they{" "}
+            <Link to="/tambola-tickets-generator">
+              print out old-style tickets
+            </Link>{" "}
+            but use the <strong>online tambola number generator</strong> for
+            calling. That way, you get the best of both worlds — a pinch of
             nostalgia, mixed with a dash of tech comfort.
           </p>
 
@@ -853,8 +1393,23 @@ function HomePage() {
           <p>
             If you like coding, building a number generator from scratch can be
             a fun pet project. You can make one using JavaScript in under an
-            hour. React or Firebase can add extra features like real-time number
-            sync across players.
+            hour.{" "}
+            <a
+              href="https://react.dev/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              React
+            </a>{" "}
+            or{" "}
+            <a
+              href="https://firebase.google.com/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Firebase
+            </a>{" "}
+            can add extra features like real-time number sync across players.
           </p>
 
           <p>
@@ -868,16 +1423,39 @@ function HomePage() {
           <h3>Where Tambola Is Heading</h3>
 
           <p>
-            Tambola's not going anywhere. The format might evolve — maybe soon
-            we'll see smart assistants like Alexa acting as our caller or custom
-            versions for festivals. But the heart of it will remain the same:
-            shared excitement and connection.
+            Tambola&apos;s not going anywhere. The format might evolve — maybe
+            soon we&apos;ll see smart assistants like{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Amazon_Alexa"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Alexa
+            </a>{" "}
+            acting as our caller or custom versions for festivals. But the heart
+            of it will remain the same: shared excitement and connection.
           </p>
 
           <p>
-            It's simple entertainment, powered by community spirit — and that's
-            probably why tambola has survived across generations and cities.
+            It&apos;s simple entertainment, powered by community spirit — and
+            that&apos;s probably why tambola has survived across generations and
+            cities.
           </p>
+          <div className="tool-cross-link">
+            <p>More on this site:</p>
+            <Link
+              to="/tambola-tickets-generator"
+              className="button button-accent"
+            >
+              Printable tambola tickets
+            </Link>
+            <Link
+              to="/online-tambola-caller"
+              className="button button-secondary-link"
+            >
+              Online tambola caller (1–90)
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -1077,10 +1655,34 @@ function HomePage() {
             <div className="faq-item">
               <h3 className="faq-question">Can I play with friends online?</h3>
               <p className="faq-answer">
-                Absolutely. Share your screen on Zoom, Meet, or Teams while you
-                run the <strong>online tambola number generator</strong>.
-                Friends mark their tickets (digital or printed) as numbers
-                appear. Works like magic.
+                Absolutely. Share your screen on{" "}
+                <a
+                  href="https://zoom.us/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Zoom
+                </a>
+                ,{" "}
+                <a
+                  href="https://meet.google.com/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Google Meet
+                </a>
+                , or{" "}
+                <a
+                  href="https://www.microsoft.com/microsoft-teams/group-chat-software"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Microsoft Teams
+                </a>{" "}
+                while you run the{" "}
+                <strong>online tambola number generator</strong>. Friends mark
+                their tickets (digital or printed) as numbers appear. Works like
+                magic.
               </p>
             </div>
             <div className="faq-item">
@@ -1099,6 +1701,9 @@ function HomePage() {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-content">
+          <div className="footer-brand">
+            <SiteLogo className="site-logo--footer" />
+          </div>
           <p>
             &copy; 2026 Tambola Game. Play the classic number game online for
             free.
@@ -1113,6 +1718,12 @@ function HomePage() {
             <a href="#features" className="footer-link">
               Features
             </a>
+            <Link to="/tambola-tickets-generator" className="footer-link">
+              Printable tickets
+            </Link>
+            <Link to="/online-tambola-caller" className="footer-link">
+              Online caller
+            </Link>
           </div>
         </div>
       </footer>
@@ -1123,11 +1734,16 @@ function HomePage() {
 function App() {
   return (
     <>
+      <RouteScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route
           path="/tambola-tickets-generator"
           element={<TambolaTicketsPage />}
+        />
+        <Route
+          path="/online-tambola-caller"
+          element={<OnlineTambolaCallerPage />}
         />
       </Routes>
       <ScrollToTop />

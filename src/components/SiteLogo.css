@@ -1,0 +1,53 @@
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.site-logo:hover .site-logo__wordmark {
+  color: var(--color-accent);
+}
+
+.site-logo__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  filter: drop-shadow(0 0 12px rgba(255, 107, 53, 0.35));
+}
+
+.site-logo__mark img {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+.site-logo__wordmark {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+  color: var(--color-text-primary);
+  letter-spacing: 0.02em;
+  transition: color 0.25s ease;
+  white-space: nowrap;
+}
+
+.site-logo--footer .site-logo__mark img {
+  width: 36px;
+  height: 36px;
+}
+
+.site-logo--footer .site-logo__wordmark {
+  font-size: 1.05rem;
+}
+
+.site-logo--compact .site-logo__mark img {
+  width: 32px;
+  height: 32px;
+}
+
+.site-logo--compact .site-logo__wordmark {
+  font-size: 1rem;
+}

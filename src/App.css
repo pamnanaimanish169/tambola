@@ -13,22 +13,34 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  width: 100%;
   background: rgba(26, 26, 46, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: var(--spacing-sm) var(--spacing-lg);
+  box-sizing: border-box;
+}
+
+.nav-row {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: var(--spacing-lg);
-  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .nav-desktop {
   display: flex;
-  justify-content: center;
+  justify-content: end;
+  align-items: center;
   gap: var(--spacing-lg);
   flex-wrap: wrap;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .nav-link {
@@ -373,6 +385,15 @@
   line-height: 1.4;
 }
 
+.content-wrapper h4 {
+  font-size: 1.35rem;
+  color: var(--color-accent);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.35;
+  font-weight: 600;
+}
+
 .content-wrapper p {
   color: var(--color-text-secondary);
   line-height: 1.8;
@@ -396,6 +417,14 @@
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: var(--spacing-lg) 0;
+}
+
+.content-section .content-wrapper a {
+  color: #ffffff;
+}
+
+.content-section .content-wrapper a:hover {
+  color: var(--color-primary);
 }
 
 .content-wrapper table {
@@ -634,6 +663,14 @@
   padding: var(--spacing-lg) var(--spacing-lg);
   margin-top: var(--spacing-lg);
   text-align: center;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
 .footer-content {
@@ -1126,11 +1163,11 @@
 }
 
 .tickets-tool-shell {
-  --tickets-panel-height: 810px;
   display: grid;
   grid-template-columns: minmax(260px, 330px) 1fr;
   gap: var(--spacing-lg);
   align-items: stretch;
+  min-height: 0;
 }
 
 .tickets-controls,
@@ -1140,13 +1177,46 @@
   border-radius: 16px;
   padding: var(--spacing-md);
   box-shadow: var(--shadow-card);
-  min-height: var(--tickets-panel-height);
+  box-sizing: border-box;
+}
+
+.tickets-controls {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
 }
 
 .tickets-preview {
   display: flex;
   flex-direction: column;
-  max-height: var(--tickets-panel-height);
+  min-height: 0;
+  align-self: stretch;
+}
+
+/*
+ * Desktop two-column layout: row height follows the left “tool” panel (natural
+ * height). The preview column matches that height; overflow scrolls inside
+ * .tickets-preview-content (grid min-size + overflow rules).
+ */
+@media (min-width: 921px) {
+  .tickets-tool-shell {
+    align-items: stretch;
+    /* --tickets-controls-height: set in TambolaTicketsPage (matches left column) */
+  }
+
+  .tickets-controls {
+    align-self: start;
+    justify-self: stretch;
+  }
+
+  .tickets-preview {
+    /* Match left column height (JS) so inner overflow can scroll */
+    height: var(--tickets-controls-height, auto);
+    min-height: var(--tickets-controls-height, auto);
+    max-height: var(--tickets-controls-height, auto);
+    overflow: hidden;
+    min-width: 0;
+  }
 }
 
 .tickets-preview-content {
@@ -1154,8 +1224,18 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  overflow-y: visible;
+}
+
+/* Inner scroll only when more than 6 tickets (see App.tsx) */
+.tickets-preview-content--scrollable {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   padding-right: 6px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
 }
 
 .tickets-controls h2 {
@@ -1207,21 +1287,21 @@
   gap: var(--spacing-md);
 }
 
-.tickets-preview-content::-webkit-scrollbar {
+.tickets-preview-content--scrollable::-webkit-scrollbar {
   width: 8px;
 }
 
-.tickets-preview-content::-webkit-scrollbar-track {
+.tickets-preview-content--scrollable::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.06);
   border-radius: 10px;
 }
 
-.tickets-preview-content::-webkit-scrollbar-thumb {
+.tickets-preview-content--scrollable::-webkit-scrollbar-thumb {
   background: rgba(0, 212, 255, 0.45);
   border-radius: 10px;
 }
 
-.tickets-preview-content::-webkit-scrollbar-thumb:hover {
+.tickets-preview-content--scrollable::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 212, 255, 0.65);
 }
 
@@ -1286,15 +1366,27 @@
     grid-template-columns: 1fr;
   }
 
+  .tickets-controls {
+    align-self: stretch;
+  }
+
   .tickets-controls,
   .tickets-preview {
     min-height: auto;
     max-height: none;
   }
 
-  .tickets-preview-content {
+  .tickets-preview {
+    overflow: visible;
+  }
+
+  .tickets-preview-content:not(.tickets-preview-content--scrollable) {
     overflow-y: visible;
     padding-right: 0;
+  }
+
+  .tickets-preview-content--scrollable {
+    padding-right: 6px;
   }
 }
 
@@ -1319,6 +1411,18 @@
     box-shadow: none !important;
     border: none !important;
     padding: 0 !important;
+  }
+
+  .tickets-preview {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .tickets-preview-content {
+    overflow: visible !important;
+    max-height: none !important;
   }
 
   .ticket-card {
