@@ -6,18 +6,26 @@
   
   <!-- Home Page - Main landing page with content, features, use cases, and FAQ -->
   <url>
-    <loc>https://yourdomain.com/</loc>
-    <lastmod>2024-12-19</lastmod>
+  <loc>https://tambola-tools.com/</loc>
+  <lastmod>2026-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
-  <!-- Number Generator Page - Interactive tambola number generator -->
+  <!-- Online Tambola Caller Page -->
   <url>
-    <loc>https://yourdomain.com/generator</loc>
-    <lastmod>2024-12-19</lastmod>
+  <loc>https://tambola-tools.com/online-tambola-caller</loc>
+  <lastmod>2026-04-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+  </url>
+
+  <!-- Tambola Tickets Generator Page -->
+  <url>
+  <loc>https://tambola-tools.com/tambola-tickets-generator</loc>
+  <lastmod>2026-04-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.9</priority>
   </url>
   
 </urlset>
