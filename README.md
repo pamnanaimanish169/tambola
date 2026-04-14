@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# Free Tambola Number Generator 1-90 | Online Housie Ticket Tool 1-90
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Tambola Tools** – Your free online Tambola (Housie) platform! Generate printable tickets, use the **online Tambola number generator (1-90)** with **voice calling** (Microsoft George - English UK), host multiplayer rooms, and more. Perfect for family gatherings, virtual parties, schools, and offices.
 
-Currently, two official plugins are available:
+<img width="1552" height="912" alt="Screenshot 2026-04-14 115254" src="https://github.com/user-attachments/assets/4d528f33-6257-4593-ae5f-75e15ea4affd" />
+ <!-- Add your caller/ticket screenshot -->
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Key Features
 
-## React Compiler
+- **🎲 Instant Ticket Generator**: Unique 3x9 tickets with proper number distribution—printable PDFs for A4/US Letter.
+- **🔊 Voice Tambola Caller**: Random numbers 1-90 with Microsoft George (en-GB) voice, "Call Next" button, reset, and full number board.
+- **👥 Multiplayer Rooms**: Create/join private games for real-time play with friends/family anywhere.
+- **⚡ Auto Pattern Detection**: Wins for Early Five, Top/Middle/Bottom Row, Full House.
+- **📱 Mobile-Responsive**: PWA with offline support, dark mode, smooth animations.
+- **🎯 Fair & Random**: No repeats, transparent calls—trusted by teachers, event hosts, and communities.
+- **🆓 100% Free**: No ads, no logins—start instantly.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Why online Tambola?** No setup mess, perfect for Zoom parties, schools, or family across cities. Bring the classic fun (birthdays, festivals, office events) into the digital age!
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend**: React 18 + TypeScript + Tailwind CSS + React Router
+- **Voice**: Web Speech API (Microsoft George en-GB)
+- **PDFs**: jsPDF + html2canvas
+- **Build**: Vite
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Quick Start
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. **Clone & Install**:
+   ```bash
+   git clone https://github.com/manishpamnani/tambola-tools.git  # Update with your repo
+   cd tambola-tools
+   npm install
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2. **Run Dev Server**:
+   ```bash
+   npm run dev
+   ```
+   Visit [http://localhost:5173](http://localhost:5173)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. **Build & Deploy**:
+   ```bash
+   npm run build
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🎮 Live Demos
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- [Tambola Caller (1-90) + Voice](https://tambola-tools.com/)
+- [Tambola Tickets Generator](https://tambola-tools.com/tambola-tickets-generator)
+- [Tambola Caller With History](https://tambola-tools.com/online-tambola-caller)
+
+## 📌 SEO Keywords
+
+tambola online, tambola number generator, online tambola caller, tambola tickets, printable tambola tickets, tambola ticket generator, housie game online, housie number generator, free tambola game, tambola game online, tambola caller 1-90, tambola voice caller, online bingo game, free bingo caller, random number generator 1-90, virtual tambola, multiplayer tambola, tambola board, tambola game for family, tambola game for school, tambola game for parties
