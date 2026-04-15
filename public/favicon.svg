@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="tambolaLogoTitle">
+  <title id="tambolaLogoTitle">Tambola</title>
+  <defs>
+    <linearGradient id="tambolaMarkStroke" x1="8" y1="12" x2="56" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff6b35"/>
+      <stop offset="0.5" stop-color="#f7931e"/>
+      <stop offset="1" stop-color="#00d4ff"/>
+    </linearGradient>
+    <linearGradient id="tambolaBallA" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ff6b35"/>
+      <stop offset="1" stop-color="#f7931e"/>
+    </linearGradient>
+    <linearGradient id="tambolaBallB" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#00d4ff"/>
+      <stop offset="1" stop-color="#0099cc"/>
+    </linearGradient>
+  </defs>
+  <rect
+    x="6"
+    y="6"
+    width="52"
+    height="52"
+    rx="14"
+    fill="#1a1a2e"
+    stroke="url(#tambolaMarkStroke)"
+    stroke-width="3"
+  />
+  <circle cx="22" cy="24" r="5" fill="url(#tambolaBallA)"/>
+  <circle cx="32" cy="24" r="5" fill="rgba(224,224,224,0.25)" stroke="rgba(0,212,255,0.5)" stroke-width="1"/>
+  <circle cx="42" cy="24" r="5" fill="url(#tambolaBallB)"/>
+  <circle cx="22" cy="36" r="5" fill="rgba(224,224,224,0.2)" stroke="rgba(255,107,53,0.45)" stroke-width="1"/>
+  <circle cx="32" cy="36" r="5" fill="url(#tambolaBallA)"/>
+  <circle cx="42" cy="36" r="5" fill="rgba(224,224,224,0.25)" stroke="rgba(0,212,255,0.5)" stroke-width="1"/>
+  <circle cx="22" cy="48" r="5" fill="url(#tambolaBallB)"/>
+  <circle cx="32" cy="48" r="5" fill="rgba(224,224,224,0.2)" stroke="rgba(255,107,53,0.4)" stroke-width="1"/>
+  <circle cx="42" cy="48" r="5" fill="url(#tambolaBallA)"/>
+</svg>

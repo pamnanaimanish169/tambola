@@ -1,0 +1,19 @@
+Options -MultiViews
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Enforce canonical host + HTTPS in one redirect.
+RewriteCond %{HTTP_HOST} !^www\. [NC,OR]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://www.tambola-tools.com%{REQUEST_URI} [R=301,L]
+
+# Let real files/folders resolve normally.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# SPA fallback: route all other requests to React entrypoint.
+RewriteRule ^ index.html [L]
+</IfModule>

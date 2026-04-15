@@ -188,9 +188,9 @@ function OnlineTambolaCallerPage() {
 
   useEffect(() => {
     const nextTitle =
-      "Online Tambola Caller | Virtual Housie Number Caller 1–90";
+      "Free Online Tambola Number Generator 1-90 | Instant Caller – No Download";
     const nextDescription =
-      "Free online tambola caller for Housie: shuffled 1–90 calls, voice phrases, board, history, auto-call. Browser-only, no signup.";
+      "Call tambola numbers 1-90 instantly — free online generator with sound, auto-announce and full house tracking. Perfect for kitty parties, Diwali and office tambola. No app needed. Play now!";
 
     const previousTitle = document.title;
     const existingDescriptionTag = document.querySelector(
